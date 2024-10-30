@@ -1,0 +1,7 @@
+.img-ctrl{
+  width:70px;
+  height: 70px;
+  border-radius:20px;
+  padding: 3%;
+  filter: drop-shadow(20x 20x 20x black);
+}

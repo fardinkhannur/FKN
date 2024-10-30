@@ -1,0 +1,116 @@
+body {
+  margin: 0;
+  background-color: #2c9dff;
+}
+
+.game-canvas {
+  width: 100%;
+  height: auto;
+  max-width: 500px;
+  max-height: 500px;
+  margin: auto;
+  border: 2px solid #444;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(1, 1, 1, 1);
+}
+
+.keys {
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  height: auto;
+  margin: auto;
+}
+
+.arr {
+  cursor: pointer;
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  line-height: 70px;
+  background: linear-gradient(135deg, #8a2be2, #ff6347); /* Gradient background */
+  color: black;
+  font-size: 50px;
+  border: none;
+  border-radius: 10px;
+  display: inline-block;
+  margin: 5px;
+  transition: all .2s ease;
+  user-select: none;
+}
+
+.arr:active {
+  transform: scale(0.95);
+}
+
+.chevron::before {
+  border-style: solid;
+  border-width: 8px 8px 0 0;
+  content: '';
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  top: -10px;
+  position: relative;
+  transform: rotate(-45deg);
+}
+
+.chevron.down::before {
+  transform: rotate(135deg);
+  top: -22px;
+}
+
+.chevron.right::before {
+  transform: rotate(45deg);
+  top: -18px;
+  left: -5px;
+}
+
+.chevron.left::before {
+  transform: rotate(225deg);
+  top: -18px;
+  left: 5px;
+}
+
+#game-container {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(220, 220, 220, 0.6);
+  padding: 20px; /* Add padding around game container */
+  border-radius: 15px; /* Round corners */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Add shadow */
+}
+
+
+/*--------------------------------------------------------------
+# Footer
+--------------------------------------------------------------*/
+#footerr {
+  padding: 15px;
+  color: #f4f6fd;
+  font-size: 14px;
+  position: auto;
+  left: 0;
+  bottom: 0;
+  width: flex;
+  z-index: 9999;
+  background: #040b14;
+}
+#footerr .copyrightt {
+  text-align: center;
+}
+#footerr .creditss {
+  padding-top: 5px;
+  text-align: center;
+  font-size: 13px;
+  color: #eaebf0;
+}
+@media (max-width: 1199px) {
+  #footer {
+    position: static;
+    width: auto;
+    padding-right: 20px 15px;
+  }
+}
