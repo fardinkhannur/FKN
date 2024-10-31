@@ -1,10 +1,12 @@
 var Snake = (function() {
 
-  const INITIAL_TAIL = 4;
+  const INITIAL_TAIL = 4; //Initian Tail Count
   var fixedTail = true;
 
   var intervalID;
-  var tileCount = 20; // Increased for more responsiveness
+  var fps = 4; // Starting speed in frames per second (slower start)
+  var maxFps = 15; // Maximum speed
+  var tileCount = 20;
   var gridSize = 400 / tileCount;
 
   const INITIAL_PLAYER = { x: Math.floor(tileCount / 2), y: Math.floor(tileCount / 2) };
@@ -38,10 +40,17 @@ var Snake = (function() {
     game.reset();
   }
 
+  function adjustSpeed() {
+    // Increase FPS as the tail grows, up to a maximum speed
+    fps = Math.min(maxFps, Math.floor(3 + tail / 5)); // Start from 3 fps and increase
+    clearInterval(intervalID);
+    intervalID = setInterval(game.loop, 1000 / fps);
+  }
+
   var game = {
 
     reset: function() {
-      ctx.fillStyle = 'lightgrey'; // Background color
+      ctx.fillStyle = 'lightgrey';
       ctx.fillRect(0, 0, canv.width, canv.height);
 
       tail = INITIAL_TAIL;
@@ -56,7 +65,9 @@ var Snake = (function() {
 
       trail = [];
       trail.push({ x: player.x, y: player.y });
-      backgroundSound.play(); // Start background music
+      backgroundSound.play();
+      
+      adjustSpeed();
     },
 
     action: {
@@ -90,7 +101,7 @@ var Snake = (function() {
       do {
         fruit.x = Math.floor(Math.random() * tileCount);
         fruit.y = Math.floor(Math.random() * tileCount);
-      } while (trail.some(segment => segment.x === fruit.x && segment.y === fruit.y)); // Ensure fruit doesn't spawn on snake
+      } while (trail.some(segment => segment.x === fruit.x && segment.y === fruit.y));
     },
 
     loop: function() {
@@ -105,7 +116,7 @@ var Snake = (function() {
 
       function HitWall() {
         if (player.x < 1 || player.x > tileCount - 2 || player.y < 1 || player.y > tileCount - 2) {
-          gameOverSound.play(); // Play game over sound
+          gameOverSound.play();
           game.reset();
         }
       }
@@ -138,11 +149,11 @@ var Snake = (function() {
         ctx.fillText("(space) pause", 24, 374);
       }
 
-      ctx.fillStyle = 'lime'; // Snake color
+      ctx.fillStyle = 'lime';
       for (var i = 0; i < trail.length - 1; i++) {
         ctx.fillRect(trail[i].x * gridSize + 1, trail[i].y * gridSize + 1, gridSize - 2, gridSize - 2);
         if (!stopped && trail[i].x == player.x && trail[i].y == player.y) {
-          gameOverSound.play(); // Play game over sound
+          gameOverSound.play();
           game.reset();
         }
       }
@@ -153,6 +164,9 @@ var Snake = (function() {
         points++;
         eatSound.play();
         game.RandomFruit();
+        
+        // Adjust the speed after each fruit
+        adjustSpeed();
       }
 
       ctx.fillStyle = 'red';
@@ -167,6 +181,10 @@ var Snake = (function() {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
       ctx.font = "bold small-caps 16px Helvetica";
       ctx.fillText("points: " + points, 288, 40);
+      // Update top score if current points exceed max
+      if (points > pointsMax) {
+        pointsMax = points;
+      }
       ctx.fillText("top: " + pointsMax, 292, 60);
 
       return reward;
@@ -175,40 +193,18 @@ var Snake = (function() {
 
   function keyPush(evt) {
     switch (evt.keyCode) {
-      case 37: // left
-        game.action.left();
-        evt.preventDefault();
-        break;
-
-      case 38: // up
-        game.action.up();
-        evt.preventDefault();
-        break;
-
-      case 39: // right
-        game.action.right();
-        evt.preventDefault();
-        break;
-
-      case 40: // down
-        game.action.down();
-        evt.preventDefault();
-        break;
-
-      case 32: // space
-        Snake.pause();
-        evt.preventDefault();
-        break;
-
-      case 27: // esc
-        game.reset();
-        evt.preventDefault();
-        break;
+      case 37: game.action.left(); evt.preventDefault(); break;
+      case 38: game.action.up(); evt.preventDefault(); break;
+      case 39: game.action.right(); evt.preventDefault(); break;
+      case 40: game.action.down(); evt.preventDefault(); break;
+      case 32: Snake.pause(); evt.preventDefault(); break;
+      case 27: game.reset(); evt.preventDefault(); break;
     }
   }
 
   return {
-    start: function(fps = 15) {
+    start: function(startingFps = 3) {
+      fps = startingFps;
       window.onload = setup;
       intervalID = setInterval(game.loop, 1000 / fps);
     },
@@ -243,21 +239,10 @@ var Snake = (function() {
 
     action: function(act) {
       switch (act) {
-        case 'left':
-          game.action.left();
-          break;
-
-        case 'up':
-          game.action.up();
-          break;
-
-        case 'right':
-          game.action.right();
-          break;
-
-        case 'down':
-          game.action.down();
-          break;
+        case 'left': game.action.left(); break;
+        case 'up': game.action.up(); break;
+        case 'right': game.action.right(); break;
+        case 'down': game.action.down(); break;
       }
     },
 
@@ -285,6 +270,6 @@ var Snake = (function() {
 
 })();
 
-Snake.start(6);
+Snake.start(3);
 Snake.setup.keyboard(true);
 Snake.setup.fixedTail(false);
